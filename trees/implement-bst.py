@@ -26,7 +26,7 @@ class BST:
     def contains(self, value):
         # Write your code here.
         if self.value == value:
-            return true
+            return True
         if value >= self.value:
             if self.right is None:
                 return False
@@ -38,11 +38,35 @@ class BST:
 
     def isLeaf(self):
         return (self.left is None) and (self.right is None)
+
+    def popMin(self):
+        node = self
+        while node.left is not None:
+            parent = node
+            node = node.left
+        min = node.value
+        if node.right is not None:
+            parent.left = node.right
+        else:
+            parent.left = None
+        return min
+
         
     def remove(self, value):
         # Write your code here.
         # Do not edit the return statement of this method.
-        if self.isLeaf():
-            return self
-        elif (value == self.left.value) and self.left.isLeaf()
+
+        if value > self.value:
+            if self.right is None:
+                # value is not in tree, so do nothing
+                return self
+            self.right.remove(value)
+
+        elif value < self.value:
+            if self.left is None:
+                # value is not in tree, so do nothing
+                return self
+            self.left.remove(value)
+        else: # self.value == value
+            pass
         return self
