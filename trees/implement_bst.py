@@ -41,29 +41,32 @@ class BST:
 
     def popMin(self):
         node = self
+        parent = None
         while node.left is not None:
             parent = node
             node = node.left
         min = node.value
-        parent.left = node.right
+        if parent is not None:
+            parent.left = node.right
         
         return min
 
     def popMax(self):
         node = self
+        parent = None
         while node.right is not None:
             parent = node
             node = node.right
         max = node.value
-        parent.right = node.left
+        if parent is not None:
+            parent.right = node.left
         return max
 
         
     def remove(self, value, parent=None):
         # Write your code here.
         # Do not edit the return statement of this method.
-        if self.isLeaf():
-            return self
+    
         if value > self.value:
             if self.right is None:
                 # value is not in tree, so do nothing
@@ -76,12 +79,16 @@ class BST:
                 return self
             self.left.remove(value, self)
         else: # self.value == value
-            if self.isLeaf() and parent is not None:  # value to remove is a leaf node, and not root
-                if self.value >= parent.value:
-                    parent.right = None
+
+            if self.isLeaf():
+                if parent is not None:  # value to remove is a leaf node, and not root
+                    if self.value >= parent.value:
+                        parent.right = None
+                    else:
+                        parent.left = None
+                    return self
                 else:
-                    parent.left = None
-                return self
+                    return self
             else:
                 if self.right is not None:
                     self.value = self.right.popMin()
@@ -120,8 +127,32 @@ def testPopMax():
     test(popped, 22)
     test(bst.right.right, None)
 
+def testRemove():
+    print("Testing remove()")
+    bst = arrayToBST([10, 5, 15, 2, 5, 13, 22, 1, 14])
+    bst.remove(10)
+    test(bst.value, 13)
+    test(bst.right.left.value, 14)
+
+    bst.remove(1)
+    test(bst.left.left.left, None)
+
+    bst.remove(5)
+    test(bst.left.value, 5)
+
+    bst.remove(15)
+    test(bst.right.value, 22)
+    test(bst.right.left.value, 14)
+
+    bst = arrayToBST([10, 5, 15, 2, 5, 13, 22, 1, 14])
+    bst.remove(14)
+    test(bst.right.left.isLeaf(), True)
+    test(bst.right.left.value, 13)
+
+
 testPopMin()
 testPopMax()
+testRemove()
 
 
 
