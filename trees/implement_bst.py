@@ -45,30 +45,48 @@ class BST:
             parent = node
             node = node.left
         min = node.value
-        if node.right is not None:
-            parent.left = node.right
-        else:
-            parent.left = None
+        parent.left = node.right
+        
         return min
 
+    def popMax(self):
+        node = self
+        while node.right is not None:
+            parent = node
+            node = node.right
+        max = node.value
+        parent.right = node.left
+        return max
+
         
-    def remove(self, value):
+    def remove(self, value, parent=None):
         # Write your code here.
         # Do not edit the return statement of this method.
-
+        if self.isLeaf():
+            return self
         if value > self.value:
             if self.right is None:
                 # value is not in tree, so do nothing
                 return self
-            self.right.remove(value)
+            self.right.remove(value, self)
 
         elif value < self.value:
             if self.left is None:
                 # value is not in tree, so do nothing
                 return self
-            self.left.remove(value)
+            self.left.remove(value, self)
         else: # self.value == value
-            pass
+            if self.isLeaf() and parent is not None:  # value to remove is a leaf node, and not root
+                if self.value >= parent.value:
+                    parent.right = None
+                else:
+                    parent.left = None
+                return self
+            else:
+                if self.right is not None:
+                    self.value = self.right.popMin()
+                else:
+                    self.value = self.left.popMax()
         return self
 
 def arrayToBST(array):
@@ -95,7 +113,16 @@ def testPopMin():
     test(popped, 13)
     test(bst.right.left.value, 14)
 
+def testPopMax():
+    print("Testing popMax()")
+    bst = arrayToBST([10, 5, 15, 2, 5, 13, 22, 1, 14])
+    popped = bst.right.popMax()
+    test(popped, 22)
+    test(bst.right.right, None)
+
 testPopMin()
+testPopMax()
+
 
 
 
