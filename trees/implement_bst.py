@@ -70,3 +70,32 @@ class BST:
         else: # self.value == value
             pass
         return self
+
+def arrayToBST(array):
+    bst = BST(array[0])
+    for n in array[1:]:
+        bst.insert(n)
+    return bst
+
+bst = arrayToBST([10, 5, 15, 2, 5, 13, 22, 1, 14])
+
+def test(actual, expected):
+    if expected == actual:
+        print('Pass')
+    else:
+        print('Test failed')
+        print('expected', expected)
+        print('actual', actual)
+    return expected == actual
+
+def testPopMin():
+    print("Testing popMin()")
+    bst = arrayToBST([10, 5, 15, 2, 5, 13, 22, 1, 14])
+    popped = bst.right.popMin()
+    test(popped, 13)
+    test(bst.right.left.value, 14)
+
+testPopMin()
+
+
+
