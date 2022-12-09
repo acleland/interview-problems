@@ -50,6 +50,15 @@ class BST:
             parent.left = node.right
         
         return min
+    
+    def getMin(self):
+        node = self
+        parent = None
+        while node.left is not None:
+            parent = node
+            node = node.left
+        min = node.value
+        return min
 
     def popMax(self):
         node = self
@@ -62,8 +71,39 @@ class BST:
             parent.right = node.left
         return max
 
-        
     def remove(self, value, parent=None):
+        node = self
+        while node is not None:
+            if value > node.value:
+                parent = node
+                node = node.right
+            elif value < node.value:
+                parent = node
+                node = node.left
+            else:
+                if node.left is not None and node.right is not None:
+                    node.value = node.right.getMin()
+                    node.right.remove(node.value, node)
+                # Root node case
+                elif parent is None: 
+                    if node.left is not None:
+                        node.value = node.left.value
+                        node.right = node.left.right
+                        node.left = node.left.left
+                    elif node.right is not None:
+                        node.value = node.right.value
+                        node.left = node.right.left
+                        node.right = node.right.right
+                    else: 
+                        pass  # problem states to do nothing if you're deleting the root node, and the root node has no children
+                elif node == parent.left:
+                    parent.left = node.left if node.left is not None else node.right
+                elif node == parent.right:
+                    parent.right = node.left if node.left is not None else node.right
+                break
+        return self
+        
+    def myRemove(self, value, parent=None):
         # Write your code here.
         # Do not edit the return statement of this method.
     
@@ -148,6 +188,15 @@ def testRemove():
     bst.remove(14)
     test(bst.right.left.isLeaf(), True)
     test(bst.right.left.value, 13)
+
+    bst.remove(3)
+    test(bst.left.left.value, 2)
+    
+    bst = BST(10)
+    bst.remove(10)
+    test(bst.value, 10)
+
+
 
 
 testPopMin()
